@@ -1,12 +1,11 @@
 package com.project.shopapp.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Data //toString()
 @Getter
@@ -15,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 public class ProductDTO {
     @NotBlank(message = "Title is required")
+    @NotEmpty(message = "Product's name cannot be empty")
     @Size(min = 3, max = 200, message = "Title must be between 3 and 200 characters")
     private String name;
 
@@ -30,4 +30,5 @@ public class ProductDTO {
     private String categoryId;
 
     private MultipartFile file;
+    private List<MultipartFile> files;
 }
