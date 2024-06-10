@@ -3,13 +3,12 @@ package com.project.shopapp.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @Builder
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDTO {
@@ -21,8 +20,8 @@ public class UserDTO {
     private String address;
     @NotBlank(message = "Password cannot be blank")
     private String password;
-//    @JsonProperty("retype_password")
-//    private String retypePassword;
+    @JsonProperty("retype_password")
+    private String retypePassword;
     @JsonProperty("date_of_birth")
     private String dateOfBirth;
     @JsonProperty("facebook_account_id")
