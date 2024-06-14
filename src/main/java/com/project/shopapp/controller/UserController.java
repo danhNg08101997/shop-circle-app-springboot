@@ -2,7 +2,10 @@ package com.project.shopapp.controller;
 
 import com.project.shopapp.dto.UserDTO;
 import com.project.shopapp.dto.UserLoginDTO;
+import com.project.shopapp.service.UserService;
+import com.project.shopapp.service.imp.UserServiceImp;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -16,6 +19,8 @@ import java.util.List;
 @RestController
 @RequestMapping("${api.prefix}/users")
 public class UserController {
+    @Autowired
+    private UserServiceImp userServiceImp;
     @PostMapping("/register")
     public ResponseEntity<?> createUser(@Valid @RequestBody UserDTO userDTO, BindingResult result ){
         try {
@@ -29,6 +34,7 @@ public class UserController {
             if(!userDTO.getPassword().equals(userDTO.getRetypePassword())){
                 return ResponseEntity.badRequest().body("Password does not match");
             }
+            userServiceImp.addUser(userDTO);
             return ResponseEntity.ok("Register Successfully");
         }catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -37,6 +43,9 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody UserLoginDTO userLoginDTO ){
-        return ResponseEntity.ok("Login Successfully");
+        // Kiểm tra thông tin đăng nhập và sinh token
+        String token = userServiceImp.login(userLoginDTO.getPhoneNumber(), userLoginDTO.getPassword());
+        // Trả về token trong response
+        return ResponseEntity.ok(token);
     }
 }
