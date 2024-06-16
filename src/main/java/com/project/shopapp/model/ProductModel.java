@@ -9,6 +9,7 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class ProductModel extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,6 +19,8 @@ public class ProductModel extends BaseEntity{
     private String name;
 
     private Float price;
+
+    private String thumbnail;
 
     @Column(nullable = false, length = 300)
     private String url;
