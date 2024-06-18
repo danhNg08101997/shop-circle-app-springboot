@@ -1,7 +1,13 @@
 package com.project.shopapp.controller;
 
 import com.project.shopapp.dto.ProductDTO;
+import com.project.shopapp.dto.ProductImageDTO;
+import com.project.shopapp.model.ProductImageModel;
+import com.project.shopapp.model.ProductModel;
+import com.project.shopapp.service.ProductService;
+import com.project.shopapp.service.imp.ProductServiceImp;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +29,11 @@ import java.util.UUID;
 @RestController
 @RequestMapping("${api.prefix}/products")
 public class ProductController {
+    @Autowired
+    private ProductServiceImp productServiceImp;
+    @Autowired
+    private ProductService productService;
+
     @GetMapping("")
     public ResponseEntity<?> getProducts(
             @RequestParam("page") int page,
@@ -41,6 +52,7 @@ public class ProductController {
                 List<String> errorMessages = result.getFieldErrors().stream().map(FieldError::getDefaultMessage).toList();
                 return ResponseEntity.badRequest().body(errorMessages);
             }
+            ProductModel newProduct = productServiceImp.addProduct(productDTO);
 //            MultipartFile file = productDTO.getFile();
             List<MultipartFile> files = productDTO.getFiles();
             files = files == null ? new ArrayList<MultipartFile>() : files;
@@ -59,6 +71,10 @@ public class ProductController {
                     }
                     // Lưu file và cập nhật thumbnail trong DTO
                     String fileName = storeFile(file);
+                    // Lưu vào đối tượng product trong DB
+                    ProductImageDTO newProductImageDTO = new ProductImageDTO();
+                    newProductImageDTO.setImageUrl(fileName);
+                    ProductImageModel productImageModel = productService.addProductImage(newProduct.getId(), newProductImageDTO);
                 }
             }
             return ResponseEntity.ok("addProduct successfully");
